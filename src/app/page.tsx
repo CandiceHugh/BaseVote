@@ -1,8 +1,20 @@
 'use client';
 
 import { useAccount } from 'wagmi';
-import { ConnectButton } from '@rainbow-me/rainbowkit';
-import { APP_CONFIG } from '@/config/app';
+import { 
+  ConnectWallet,
+  Wallet,
+  WalletDropdown,
+  WalletDropdownDisconnect,
+} from '@coinbase/onchainkit/wallet';
+import { 
+  Address,
+  Avatar,
+  Name,
+  Identity,
+  EthBalance,
+} from '@coinbase/onchainkit/identity';
+import { APP_CONFIG, CONTRACT_CONFIG } from '@/config/app';
 import Link from 'next/link';
 
 export default function HomePage() {
@@ -13,7 +25,21 @@ export default function HomePage() {
       <div className="container mx-auto px-4 py-8 max-w-4xl">
         <header className="flex justify-between items-center mb-12">
           <h1 className="text-3xl font-bold">{APP_CONFIG.name}</h1>
-          <ConnectButton />
+          <Wallet>
+            <ConnectWallet>
+              <Avatar className="h-6 w-6" />
+              <Name />
+            </ConnectWallet>
+            <WalletDropdown>
+              <Identity className="px-4 pt-3 pb-2" hasCopyAddressOnClick>
+                <Avatar />
+                <Name />
+                <Address />
+                <EthBalance />
+              </Identity>
+              <WalletDropdownDisconnect />
+            </WalletDropdown>
+          </Wallet>
         </header>
 
         <main className="space-y-8">
@@ -59,7 +85,7 @@ export default function HomePage() {
         </main>
 
         <footer className="text-center mt-12 text-gray-500 text-sm">
-          <p>合约地址: {APP_CONFIG.builderCode}</p>
+          <p>合约地址: {CONTRACT_CONFIG.address}</p>
         </footer>
       </div>
     </div>

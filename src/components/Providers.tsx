@@ -1,28 +1,38 @@
 'use client';
 
-import '@rainbow-me/rainbowkit/styles.css';
-import { getDefaultConfig, RainbowKitProvider, darkTheme } from '@rainbow-me/rainbowkit';
-import { WagmiProvider } from 'wagmi';
+import { OnchainKitProvider } from '@coinbase/onchainkit';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { base } from 'wagmi/chains';
-import { QueryClientProvider, QueryClient } from '@tanstack/react-query';
+import { WagmiProvider } from 'wagmi';
+import { http, createConfig } from 'wagmi';
+import { coinbaseWallet } from 'wagmi/connectors';
 import { ReactNode } from 'react';
 
-const config = getDefaultConfig({
-  appName: 'BaseVote',
-  projectId: process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID || 'YOUR_PROJECT_ID',
-  chains: [base],
-  ssr: true,
-});
-
 const queryClient = new QueryClient();
+
+const config = createConfig({
+  chains: [base],
+  connectors: [
+    coinbaseWallet({
+      appName: 'BaseVote',
+      preference: 'smartWalletOnly',
+    }),
+  ],
+  transports: {
+    [base.id]: http(),
+  },
+});
 
 export function Providers({ children }: { children: ReactNode }) {
   return (
     <WagmiProvider config={config}>
       <QueryClientProvider client={queryClient}>
-        <RainbowKitProvider theme={darkTheme()}>
+        <OnchainKitProvider
+          apiKey={process.env.NEXT_PUBLIC_ONCHAINKIT_API_KEY}
+          chain={base}
+        >
           {children}
-        </RainbowKitProvider>
+        </OnchainKitProvider>
       </QueryClientProvider>
     </WagmiProvider>
   );

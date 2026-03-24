@@ -2,7 +2,19 @@
 
 import { useState } from 'react';
 import { useAccount, useWriteContract, useWaitForTransactionReceipt } from 'wagmi';
-import { ConnectButton } from '@rainbow-me/rainbowkit';
+import { 
+  ConnectWallet,
+  Wallet,
+  WalletDropdown,
+  WalletDropdownDisconnect,
+} from '@coinbase/onchainkit/wallet';
+import { 
+  Address,
+  Avatar,
+  Name,
+  Identity,
+  EthBalance,
+} from '@coinbase/onchainkit/identity';
 import { BASE_VOTE_ABI } from '@/lib/abi/baseVote';
 import { CONTRACT_CONFIG } from '@/config/app';
 import { trackTransaction } from '@/utils/track';
@@ -40,7 +52,21 @@ export default function CreateProposalPage() {
       <div className="container mx-auto px-4 py-8 max-w-2xl">
         <header className="flex justify-between items-center mb-8">
           <Link href="/" className="text-2xl font-bold">← BaseVote</Link>
-          <ConnectButton />
+          <Wallet>
+            <ConnectWallet>
+              <Avatar className="h-6 w-6" />
+              <Name />
+            </ConnectWallet>
+            <WalletDropdown>
+              <Identity className="px-4 pt-3 pb-2" hasCopyAddressOnClick>
+                <Avatar />
+                <Name />
+                <Address />
+                <EthBalance />
+              </Identity>
+              <WalletDropdownDisconnect />
+            </WalletDropdown>
+          </Wallet>
         </header>
 
         <main>
